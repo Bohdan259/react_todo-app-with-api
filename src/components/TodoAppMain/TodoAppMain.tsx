@@ -4,12 +4,12 @@ import { EditTodo, Todo } from '../../types/Todo';
 import { TodoItem } from '../TodoItem';
 
 type Props = {
+  deletingIds: number[];
+  updatingIds: number[];
   selectedUpdateTodo: number | null;
   editTodo: EditTodo | null;
   loadingIds: number[];
-  toggleTodo: Todo | null;
   loaderToggle: boolean;
-  selectedDeleteTodo: number | null;
   loaderDelete: boolean;
   todos: Todo[];
   tempTodo: Todo | null;
@@ -22,15 +22,15 @@ type Props = {
 
 export const TodoAppMain = React.memo<Props>(
   ({
+    updatingIds,
+    deletingIds,
     selectedUpdateTodo,
     setSelectedUpdateTodo,
     editTodo,
     setEditTodo,
     loadingIds,
-    toggleTodo,
     setToggleTodo,
     loaderClearButton,
-    selectedDeleteTodo,
     todos,
     tempTodo,
     onSelectedTodo,
@@ -41,15 +41,15 @@ export const TodoAppMain = React.memo<Props>(
           {todos.map(todo => (
             <CSSTransition key={todo.id} timeout={300} classNames="item">
               <TodoItem
+                updatingIds={updatingIds}
+                deletingIds={deletingIds}
                 selectedUpdateTodo={selectedUpdateTodo}
                 setSelectedUpdateTodo={setSelectedUpdateTodo}
                 editTodo={editTodo}
                 loadingIds={loadingIds}
-                toggleTodo={toggleTodo}
                 setToggleTodo={setToggleTodo}
                 todo={todo}
                 loaderClearButton={loaderClearButton}
-                selectedDeleteTodo={selectedDeleteTodo}
                 tempTodo={tempTodo}
                 onSelectedTodo={onSelectedTodo}
                 setEditTodo={setEditTodo}
@@ -60,14 +60,14 @@ export const TodoAppMain = React.memo<Props>(
           {tempTodo && (
             <CSSTransition key={0} timeout={300} classNames="temp-item">
               <TodoItem
+                updatingIds={updatingIds}
+                deletingIds={deletingIds}
                 selectedUpdateTodo={selectedUpdateTodo}
                 setSelectedUpdateTodo={setSelectedUpdateTodo}
                 editTodo={editTodo}
                 loadingIds={loadingIds}
-                toggleTodo={toggleTodo}
                 todo={tempTodo}
                 loaderClearButton={false}
-                selectedDeleteTodo={null}
                 tempTodo={tempTodo}
                 onSelectedTodo={onSelectedTodo}
                 setToggleTodo={setToggleTodo}

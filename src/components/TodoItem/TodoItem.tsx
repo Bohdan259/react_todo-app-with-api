@@ -3,13 +3,13 @@ import { EditTodo, Todo } from '../../types/Todo';
 import classNames from 'classnames';
 
 type Props = {
+  updatingIds: number[];
+  deletingIds: number[];
   selectedUpdateTodo: number | null;
   editTodo: EditTodo | null;
   loadingIds: number[];
-  toggleTodo: Todo | null;
   todo: Todo;
   loaderClearButton: boolean;
-  selectedDeleteTodo: number | null;
   tempTodo: Todo | null;
   onSelectedTodo: (todoId: number) => void;
   setToggleTodo: (todo: Todo) => void;
@@ -19,14 +19,14 @@ type Props = {
 
 export const TodoItem = React.memo<Props>(
   ({
+    updatingIds,
+    deletingIds,
     selectedUpdateTodo,
     setSelectedUpdateTodo,
     editTodo,
     loadingIds,
-    toggleTodo,
     todo,
     loaderClearButton,
-    selectedDeleteTodo,
     tempTodo,
     onSelectedTodo,
     setToggleTodo,
@@ -138,9 +138,9 @@ export const TodoItem = React.memo<Props>(
           className={classNames('modal overlay ', {
             'is-active':
               todo.id === tempTodo?.id ||
-              todo.id === selectedDeleteTodo ||
+              deletingIds.includes(todo.id) ||
               (loaderClearButton && todo.completed) ||
-              todo.id === toggleTodo?.id ||
+              updatingIds.includes(todo.id) ||
               loadingIds.includes(Number(todo.id)) ||
               editTodo?.id === todo.id,
           })}

@@ -37,11 +37,16 @@ export const App: React.FC = () => {
   const [selectedDeleteTodo, setSelectedDeleteTodo] = useState<number | null>(
     null,
   );
+
+  const [deletingIds, setDeletingIds] = useState<number[]>([]);
+
   const [deleteError, setDeleteError] = useState(false);
   const [clearButton, setClearButton] = useState(false);
   const [loaderDeleteCompleted, setLoaderDeleteCompleted] = useState(false);
 
   const [toggleTodo, setToggleTodo] = useState<Todo | null>(null);
+  const [updatingIds, setUpdatingIds] = useState<number[]>([]);
+
   const [loaderToggle, setLoaderToggle] = useState(false);
   const [toggleError, setToggleError] = useState(false);
   const [isClickToggleAllButton, setsIClickToggleAllButton] = useState(false);
@@ -129,6 +134,8 @@ export const App: React.FC = () => {
   }, [notificationError]);
 
   function deleteById(todoId: number, isSingle = false) {
+    setDeletingIds(prev => [...prev, todoId]);
+
     return deleteTodo(todoId)
       .then(() => {
         setTodos(currentTodos =>
@@ -141,6 +148,7 @@ export const App: React.FC = () => {
         setDeleteError(true);
       })
       .finally(() => {
+        setDeletingIds(prev => prev.filter(id => id !== todoId));
         if (isSingle) {
           setLoaderDelete(false);
           setSelectedDeleteTodo(null);
@@ -179,6 +187,8 @@ export const App: React.FC = () => {
   function todoUpdateById(todo: Todo, isSingle = false) {
     const { id, completed } = todo;
 
+    setUpdatingIds(prev => [...prev, id]);
+
     return updateTodo({ id, completed })
       .then(newTodo => {
         setTodos(currentTodos => {
@@ -195,6 +205,7 @@ export const App: React.FC = () => {
         setToggleError(true);
       })
       .finally(() => {
+        setUpdatingIds(prev => prev.filter(todoId => todoId !== id));
         if (isSingle) {
           setLoaderToggle(false);
           setToggleTodo(null);
@@ -304,19 +315,19 @@ export const App: React.FC = () => {
         />
 
         <TodoAppMain
+          deletingIds={deletingIds}
+          updatingIds={updatingIds}
           selectedUpdateTodo={selectedUpdateTodo}
           setSelectedUpdateTodo={setSelectedUpdateTodo}
           editTodo={editTodo}
           setEditTodo={setEditTodo}
           loadingIds={loadingIds}
-          toggleTodo={toggleTodo}
           loaderToggle={loaderToggle}
           setToggleTodo={setToggleTodo}
           todos={visibleTodos}
           tempTodo={tempTodo}
           loaderDelete={loaderDelete}
           onSelectedTodo={setSelectedDeleteTodo}
-          selectedDeleteTodo={selectedDeleteTodo}
           loaderClearButton={loaderDeleteCompleted}
         />
 
