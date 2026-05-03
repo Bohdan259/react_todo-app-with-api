@@ -22,4 +22,3 @@ export const updateTodo = ({ id, completed }: UpdateTodo) => {
 export const editingTodo = ({ id, title }: EditTodo) => {
   return client.patch<Todo>(`/todos/${id}`, { title: title });
 };
-// Add more methods here
